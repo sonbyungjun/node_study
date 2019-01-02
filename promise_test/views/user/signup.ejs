@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+    <form action="/signup" id="signupForm" method="POST">
+        <p>
+            id : <input type="text" name="username"> <button type="button" id="checkId">중복확인</button>
+        </p>
+        <p>
+            pw : <input type="password" name="password">
+        </p>
+        <p>
+            이름 : <input type="text" name="name">
+        </p>
+        <p>
+            <button type="submit">입력완료</button>
+        </p>
+    </form>
+    
+</body>
+<script src="./jquery.js"></script>
+<script>
+    var rule = [
+        {
+            name : 'username',
+            ele : $('#signupForm input[name=username]'),
+            Pattern : /^([0-9a-zA-Z_]){2,8}$/,
+            message : '아이디 형식을 확인하세요.'
+        },
+        {
+            name : 'password',
+            ele : $('#signupForm input[name=password]'),
+            Pattern : /^([0-9a-zA-Z_]){2,8}$/,
+            message : '패스워드 형식을 확인하세요.'
+        },
+        {
+            name : 'name',
+            ele : $('#signupForm input[name=name]'),
+            Pattern : /^([가-힣a-zA-Z]){1,20}$/,
+            message : '이름 형식을 확인하세요.'
+        }
+    ]
+
+
+    function valid(){
+        for(var ele of rule){
+            if(!ele.ele.val() || !ele.Pattern.test(ele.ele.val())){
+                alert(ele.message)
+                return false
+            }
+        }
+        return true
+    }
+
+    // $('#signupForm').on('submit', function(){
+    //     alert('중복확인을 눌러주세요')
+    //     $('#signupForm').attr("onsubmit","return false;")
+    //     return false
+    // })
+    
+    $("#checkId").click(function(){
+        const id = $('#signupForm input[name=username]').val();
+        if(!id) return alert('아이디를 입력하세요!')
+        $.ajax({
+            url : '/userCheck',
+            method : 'post',
+            data : { id },
+            dataType : 'json',
+            success : function(res){
+                const user = JSON.parse(res.user)
+                const userkey = user["COUNT(*)"]
+                if(userkey > 0){
+                    alert('중복된 아이디가 있습니다 다른 아이디를 입력해주세요.')
+                }else{
+                    alert('사용가능한 아이디입니다.')
+                    $('#signupForm').on('submit', function(){
+                        $('#signupForm').attr("onsubmit","return true;")
+                        return valid()
+                    })
+                }
+                },
+                error : function(err){
+                    console.log(err)
+                    alert('서버오류!')
+                }
+            })
+        })
+
+</script>
+</html>

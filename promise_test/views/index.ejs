@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>promise_test</title>
+</head>
+<body>
+    <main>
+        <div>
+            <h1>
+                <% user = JSON.parse(user) %>
+                <% if(user) {%>
+                    안녕하세요 <%=user.name%>님 환영합니다.
+                <% }else{ %>
+                    안녕하세요 로그인하세요
+                <%}%>
+            </h1>
+            <% if(!user) {%>
+            <a href="/login">로그인</a>
+            <a href="/signup">회원가입</a>
+            <%}else{%>
+                <a href="/logout">로그아웃</a>
+            <%}%>
+        </div>
+    </main>
+</body>
+
+</html>
